@@ -1,3 +1,6 @@
+Forked from the original Purs to change some colors, spacing, and other minor visual tweaks.
+
+
 # Purs
 
 A [Pure](https://github.com/sindresorhus/pure)-inspired prompt in [Rust](https://www.rust-lang.org/).

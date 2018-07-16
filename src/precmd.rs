@@ -32,19 +32,19 @@ fn repo_status(r: &Repository) -> Option<String> {
   let mut is_dirty = false;
 
   for entry in statuses.iter().filter(
-    |e| e.status() != git2::STATUS_CURRENT,
+    |e| e.status() != git2::Status::CURRENT,
   ) {
     is_dirty = match entry.status() {
-      s if s.contains(git2::STATUS_INDEX_NEW) => true,
-      s if s.contains(git2::STATUS_INDEX_MODIFIED) => true,
-      s if s.contains(git2::STATUS_INDEX_DELETED) => true,
-      s if s.contains(git2::STATUS_INDEX_RENAMED) => true,
-      s if s.contains(git2::STATUS_INDEX_TYPECHANGE) => true,
-      s if s.contains(git2::STATUS_WT_NEW) => true,
-      s if s.contains(git2::STATUS_WT_MODIFIED) => true,
-      s if s.contains(git2::STATUS_WT_DELETED) => true,
-      s if s.contains(git2::STATUS_WT_RENAMED) => true,
-      s if s.contains(git2::STATUS_WT_TYPECHANGE) => true,
+      s if s.contains(git2::Status::INDEX_NEW) => true,
+      s if s.contains(git2::Status::INDEX_MODIFIED) => true,
+      s if s.contains(git2::Status::INDEX_DELETED) => true,
+      s if s.contains(git2::Status::INDEX_RENAMED) => true,
+      s if s.contains(git2::Status::INDEX_TYPECHANGE) => true,
+      s if s.contains(git2::Status::WT_NEW) => true,
+      s if s.contains(git2::Status::WT_MODIFIED) => true,
+      s if s.contains(git2::Status::WT_DELETED) => true,
+      s if s.contains(git2::Status::WT_RENAMED) => true,
+      s if s.contains(git2::Status::WT_TYPECHANGE) => true,
       _ => false,
     };
 
