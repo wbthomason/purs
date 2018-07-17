@@ -72,7 +72,7 @@ fn repo_status(r: &Repository) -> Option<String> {
     }
 
     if has_new {
-        out.push(Green.paint("✚"));
+        out.push(Green.bold().paint("＋"));
     }
 
     if has_untracked {
