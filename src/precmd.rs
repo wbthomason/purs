@@ -1,7 +1,7 @@
 use ansi_term::ANSIStrings;
-use ansi_term::Colour::{Blue, Green, Purple, Red, Yellow};
+use ansi_term::Colour::{Blue, Green, Red, Yellow};
 use clap::{App, ArgMatches, SubCommand};
-use git2::{self, Oid, Remote, Repository, Revwalk, StatusOptions};
+use git2::{self, Repository, StatusOptions};
 use regex::Regex;
 use std::env;
 
@@ -92,51 +92,7 @@ fn repo_status(r: &Repository) -> Option<String> {
         out.push(Green.bold().paint(" ✔"));
     }
 
-    let mut revs = match r.revwalk() {
-        Err(_) => return None,
-        Ok(revs) => revs,
-    };
-
-    revs.set_sorting(git2::Sort::TIME);
-
-    match revs.push_range("HEAD..@{u}") {
-        Err(_) => return None,
-        _ => (),
-    }
-
-    let has_unpushed = revs.count() > 0;
-    if has_unpushed {
-        out.push(Purple.paint("⇡"));
-    }
-
-    // TODO: Figure out how to check for unpushed and unmerged commits.
-    // let mut has_unpushed = false;
-    // let mut has_unmerged = false;
-
-    // let remotes = match r.remotes() {
-    //     Ok(names) => names,
-    //     Err(_) => return None,
-    // };
-
-    // for remote in remotes.iter() {
-    //     if let Some(remote) = remote {
-    //         let remote_info = match r.find_remote(remote) {
-    //             Ok(rem_info) => rem_info,
-    //             Err(_) => return None
-    //         };
-    //     let mut revs = match r.revwalk() {
-    //         Err(_) => return None,
-    //         Ok(revs) => revs,
-    //     };
-
-    //     revs.set_sorting(git2::Sort::TIME);
-
-    //     match revs.push_head() {
-    //         Err(_) => return None,
-    //         _ => (),
-    //     }
-    //     }
-    // }
+    // TODO: Is there a way to do unpushed/unmerged commits?
 
     Some(ANSIStrings(&out).to_string())
 }
