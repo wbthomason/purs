@@ -92,6 +92,23 @@ fn repo_status(r: &Repository) -> Option<String> {
         out.push(Green.bold().paint(" ✔"));
     }
 
+    let mut revs = match r.revwalk() {
+        Err(_) => return None,
+        Ok(revs) => revs,
+    };
+
+    revs.set_sorting(git2::Sort::TIME);
+
+    match revs.push_range("HEAD..@{u}") {
+        Err(_) => return None,
+        _ => (),
+    }
+
+    let has_unpushed = revs.count() > 0;
+    if has_unpushed {
+        out.push(Purple.paint("⇡"));
+    }
+
     // TODO: Figure out how to check for unpushed and unmerged commits.
     // let mut has_unpushed = false;
     // let mut has_unmerged = false;
