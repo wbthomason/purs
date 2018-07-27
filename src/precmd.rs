@@ -89,27 +89,35 @@ fn repo_status(r: &Repository) -> Option<String> {
     }
 
     if has_del {
-        out.push(Red.paint(" ✖"));
+        out.push(Red.bold().paint("Ｘ"));
     }
 
     if has_move {
         out.push(Yellow.bold().paint("➜"))
     }
 
-    let is_clean = !is_dirty && !has_new && !has_del && !has_move && !has_untracked;
+    let is_clean = !is_dirty && !has_new && !has_untracked && !has_del && !has_move;
     if is_clean {
         // Clean!
         out.push(Green.bold().paint(" ✔"));
     }
 
     if is_ahead {
-        let spacer = if is_clean || has_move {" "} else {""};
-        out.push(Cyan.paint(spacer.to_owned() + "⇡"));
+        let spacer = if is_clean || has_del || has_move {
+            " "
+        } else {
+            ""
+        };
+        out.push(Cyan.paint(spacer.to_owned() + "￪"));
     }
 
     if is_behind {
-        let spacer = if !is_ahead && (is_clean || has_move) { " " } else { "" };
-        out.push(Cyan.paint(spacer.to_owned() + "⇣"));
+        let spacer = if !is_ahead && (is_clean || has_move) {
+            " "
+        } else {
+            ""
+        };
+        out.push(Cyan.paint(spacer.to_owned() + "￬"));
     }
 
     Some(ANSIStrings(&out).to_string())
