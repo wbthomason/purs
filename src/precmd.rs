@@ -1,5 +1,5 @@
 use ansi_term::ANSIStrings;
-use ansi_term::Colour::{Blue, Green, Red, Yellow};
+use ansi_term::Colour::{Blue, Cyan, Green, Red, Yellow};
 use clap::{App, ArgMatches, SubCommand};
 use git2::{self, Repository, StatusOptions};
 use regex::Regex;
@@ -66,7 +66,16 @@ fn repo_status(r: &Repository) -> Option<String> {
         };
     }
 
+    // Adapted from @Kurt-Bonatz in https://github.com/alexcrichton/git2-rs/issues/332#issuecomment-405623972
+    let head_ref = r.revparse_single("HEAD").unwrap().id();
+    let (is_ahead, is_behind) = r.revparse_ext("@{u}")
+        .ok()
+        .and_then(|(upstream, _)| r.graph_ahead_behind(head_ref, upstream.id()).ok())
+        .map(|(ahead, behind)| (ahead > 0, behind > 0))
+        .unwrap_or((false, false));
+
     let mut out = vec![shorthand];
+
     if is_dirty {
         out.push(Blue.paint("＊"));
     }
@@ -87,12 +96,21 @@ fn repo_status(r: &Repository) -> Option<String> {
         out.push(Yellow.bold().paint("➜"))
     }
 
-    if !is_dirty && !has_new && !has_del && !has_move && !has_untracked {
+    let is_clean = !is_dirty && !has_new && !has_del && !has_move && !has_untracked;
+    if is_clean {
         // Clean!
         out.push(Green.bold().paint(" ✔"));
     }
 
-    // TODO: Is there a way to do unpushed/unmerged commits?
+    if is_ahead {
+        let spacer = if is_clean || has_move {" "} else {""};
+        out.push(Cyan.paint(spacer.to_owned() + "⇡"));
+    }
+
+    if is_behind {
+        let spacer = if !is_ahead && (is_clean || has_move) { " " } else { "" };
+        out.push(Cyan.paint(spacer.to_owned() + "⇣"));
+    }
 
     Some(ANSIStrings(&out).to_string())
 }
