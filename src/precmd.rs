@@ -6,7 +6,7 @@ use regex::Regex;
 use std::env;
 
 fn shorten_path(cwd: &str) -> String {
-    let friendly_path = match env::home_dir() {
+    let friendly_path = match dirs::home_dir() {
         Some(path) => Regex::new(path.to_str().unwrap())
             .unwrap()
             .replace(cwd, "~"),
@@ -131,6 +131,7 @@ pub fn display(_sub: &ArgMatches) {
         Ok(repo) => repo_status(&repo),
         Err(_e) => None,
     };
+
     let display_branch = Green.paint(branch.unwrap_or_default());
 
     println!("{} {}", display_path, display_branch);
