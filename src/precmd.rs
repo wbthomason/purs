@@ -108,7 +108,7 @@ fn repo_status(r: &Repository) -> Option<String> {
         } else {
             ""
         };
-        out.push(Cyan.paint(spacer.to_owned() + "￪"));
+        out.push(Cyan.paint(spacer.to_owned() + "↑"));
     }
 
     if is_behind {
@@ -117,7 +117,7 @@ fn repo_status(r: &Repository) -> Option<String> {
         } else {
             ""
         };
-        out.push(Cyan.paint(spacer.to_owned() + "￬"));
+        out.push(Cyan.paint(spacer.to_owned() + "↓"));
     }
 
     Some(ANSIStrings(&out).to_string())
