@@ -6,7 +6,7 @@ use std::env;
 
 fn shorten_path(cwd: &str) -> String {
   match dirs::home_dir() {
-    Some(path) => cwd.replacen("~", path.to_str().unwrap(), 1),
+    Some(path) => cwd.replacen(path.to_str().unwrap(), "~", 1),
     _ => String::new(),
   }
 }
